@@ -5,8 +5,8 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "starter/backend/**"
+    # paths:
+    #   - "starter/backend/**"
 
 env:
   PYTHON_VERSION: 3.11
@@ -116,7 +116,7 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: backend
-          IMAGE_TAG: v2
+          IMAGE_TAG: v3
         run: |
           echo "Registry: $REGISTRY"
           echo "Repository: $REPOSITORY"
