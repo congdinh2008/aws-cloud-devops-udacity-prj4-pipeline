@@ -7,4 +7,4 @@ namespace: default
 images:
   - name: frontend
     newName: 702664481076.dkr.ecr.us-east-1.amazonaws.com/frontend
-    newTag: latest
+    newTag: v2
