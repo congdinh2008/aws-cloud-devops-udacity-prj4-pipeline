@@ -1,4 +1,28 @@
-# Movie Picture Pipeline
+# Udacity AWS Cloud DevOps Engineer - Project 04 - Movie Picture Pipeline
+
+- [Udacity AWS Cloud DevOps Engineer - Project 04 - Movie Picture Pipeline](#udacity-aws-cloud-devops-engineer---project-04---movie-picture-pipeline)
+  - [Deliverables](#deliverables)
+    - [Frontend](#frontend)
+    - [Backend](#backend)
+  - [One-time setup instructions](#one-time-setup-instructions)
+    - [Login](#login)
+    - [Configuration](#configuration)
+  - [Setting up Continuous Deployment environment](#setting-up-continuous-deployment-environment)
+    - [Create AWS infrastructure with Terraform](#create-aws-infrastructure-with-terraform)
+    - [Generate AWS access keys for Github Actions](#generate-aws-access-keys-for-github-actions)
+    - [Add Github Action user to Kubernetes](#add-github-action-user-to-kubernetes)
+  - [Dependencies](#dependencies)
+  - [Frontend Development notes](#frontend-development-notes)
+    - [Running tests](#running-tests)
+    - [Running linter](#running-linter)
+    - [Build and run](#build-and-run)
+    - [Deploy Kubernetes manifests](#deploy-kubernetes-manifests)
+  - [Backend Development notes](#backend-development-notes)
+    - [Running tests](#running-tests-1)
+    - [Running linter](#running-linter-1)
+    - [Build and run](#build-and-run-1)
+    - [Deploy Kubernetes manifests](#deploy-kubernetes-manifests-1)
+  - [License](#license)
 
 You've been brought on as the DevOps resource for a development team that manages a web application that is a catalog of Movie Picture movies. They're in dire need of automating their development workflows in hopes of accelerating their release cycle. They'd like to use Github Actions to automate testing, building and deploying their applications to an existing Kubernetes cluster.
 
