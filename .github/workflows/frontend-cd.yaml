@@ -6,9 +6,9 @@ on:
   push:
     branches:
       - main
-    # paths:
-    #   # This will only run on changes to the frontend code
-    #   - 'starter/frontend/**'
+    paths:
+      # This will only run on changes to the frontend code
+      - 'starter/frontend/**'
 env:
   NODE_VERSION: 18.x
 
@@ -121,6 +121,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          mask-password: "true"
+          
       - name: Update kubeconfig
         run: |
           aws eks update-kubeconfig --name cluster
