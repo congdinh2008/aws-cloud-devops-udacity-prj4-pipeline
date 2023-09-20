@@ -118,7 +118,7 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: backend
-          IMAGE_TAG: v3
+          IMAGE_TAG: latest
         run: |
           echo "Registry: $REGISTRY"
           echo "Repository: $REPOSITORY"
