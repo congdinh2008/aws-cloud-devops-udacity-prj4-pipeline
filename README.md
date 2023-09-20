@@ -1,5 +1,10 @@
 # Udacity AWS Cloud DevOps Engineer - Project 04 - Movie Picture Pipeline
 
+CI | CD |
+--- | --- |
+[![Backend Continuous Integration](https://github.com/congdinh2008/aws-cloud-devops-udacity-prj4-pipeline/actions/workflows/backend-ci.yaml/badge.svg)](https://github.com/congdinh2008/aws-cloud-devops-udacity-prj4-pipeline/actions/workflows/backend-ci.yaml) | [![Backend Continuous Deployment](https://github.com/congdinh2008/aws-cloud-devops-udacity-prj4-pipeline/actions/workflows/backend-cd.yaml/badge.svg)](https://github.com/congdinh2008/aws-cloud-devops-udacity-prj4-pipeline/actions/workflows/backend-cd.yaml) | 
+[![Frontend Continuous Integration](https://github.com/congdinh2008/aws-cloud-devops-udacity-prj4-pipeline/actions/workflows/frontend-ci.yaml/badge.svg)](https://github.com/congdinh2008/aws-cloud-devops-udacity-prj4-pipeline/actions/workflows/frontend-ci.yaml) | [![Frontend Continuous Deployment](https://github.com/congdinh2008/aws-cloud-devops-udacity-prj4-pipeline/actions/workflows/frontend-cd.yaml/badge.svg)](https://github.com/congdinh2008/aws-cloud-devops-udacity-prj4-pipeline/actions/workflows/frontend-cd.yaml) | 
+
 - [Udacity AWS Cloud DevOps Engineer - Project 04 - Movie Picture Pipeline](#udacity-aws-cloud-devops-engineer---project-04---movie-picture-pipeline)
   - [Deliverables](#deliverables)
     - [Frontend](#frontend)
