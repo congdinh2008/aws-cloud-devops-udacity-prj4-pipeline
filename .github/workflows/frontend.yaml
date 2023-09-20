@@ -1,78 +1,59 @@
-name: Backend CI/CD
+name: Frontend CI/CD
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # This allows running on-demand
   pull_request:
     branches:
       - main
     paths:
-      - "starter/backend/**"
-
+      - 'starter/frontend/**'
 env:
-  PYTHON_VERSION: 3.11
+  NODE_VERSION: 18.x
 
 jobs:
   lint:
-    name: Backend Linting
+    name: Frontend Linting
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./starter/backend
+        working-directory: ./starter/frontend
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Cache pipenv dependencies
+      - name: Cache Node.js dependencies
         uses: actions/cache@v3
         with:
-          path: ~/.cache/pipenv
-          key: pipenv-${{ runner.os }}-${{ hashFiles('**/Pipfile.lock') }}
+          path: ~/.npm
+          key: npm-${{ hashFiles('starter/frontend/package-lock.json') }}
           restore-keys: |
-            pipenv-${{ runner.os }}-
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{env.PYTHON_VERSION}}
-
-      - name: Install pipenv
-        run: |
-          pip install pipenv
+            npm-
 
       - name: Install dependencies
         run: |
-          pipenv install
+          npm install
 
-      - name: Run lint
+      - name: Run ESLint
         run: |
-          pipenv run lint
+          npm run lint -- --fix
 
   test:
-    name: Backend Testing
+    name: Frontend Testing
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./starter/backend
+        working-directory: ./starter/frontend
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{env.PYTHON_VERSION}}
-
-      - name: Install pipenv
-        run: |
-          pip install pipenv
-
       - name: Install dependencies
-        run: |
-          pipenv install
+        run: | 
+          npm install
 
       - name: Run tests
         run: |
-          pipenv run test
+          npm test
 
   build:
     name: Build and Push Docker image to Amazon ECR
@@ -80,23 +61,14 @@ jobs:
     needs: [lint, test]
     defaults:
       run:
-        working-directory: ./starter/backend
+        working-directory: ./starter/frontend
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{env.PYTHON_VERSION}}
-
-      - name: Install pipenv
-        run: |
-          pip install pipenv
-
       - name: Install dependencies
         run: |
-          pipenv install
+          npm install
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -110,36 +82,33 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
         with:
-          mask-password: "true"
+          mask-password: 'true'
 
       - name: Build, Tag, and Push docker image to Amazon ECR
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: backend
+          REPOSITORY: frontend
           IMAGE_TAG: latest
         run: |
           echo "Registry: $REGISTRY"
           echo "Repository: $REPOSITORY"
           echo "Image Tag: $IMAGE_TAG"
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 .
           docker images
-          # docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
       - name: Cache Docker image
         uses: actions/cache@v3
         with:
           path: ~/docker-cache
-          key: docker-${{ github.sha }}-backend
+          key: docker-${{ github.sha }}-frontend
           restore-keys: |
             docker-${{ github.sha }}-
 
   deploy:
-    name: Deploy to EKS
+    name: Deploy to Kubernetes
     runs-on: ubuntu-latest
     needs: [build]
-    defaults:
-      run:
-        working-directory: ./starter/backend
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -153,17 +122,20 @@ jobs:
           aws-region: us-east-1
 
       - name: Update kubeconfig
-        run: aws eks update-kubeconfig --name cluster
+        run: |
+          aws eks update-kubeconfig --name cluster
 
       - name: Run init.sh
-        run: ./init.sh || true
+        run:  |
+          ./init.sh || true
         working-directory: ./setup
 
       - name: Set Docker image in Kustomize
-        run: kustomize edit set image backend=$REGISTRY/$REPOSITORY:$IMAGE_TAG
-        working-directory: ./k8s
+        run: |
+          kustomize edit set image frontend=$REGISTRY/$REPOSITORY:$IMAGE_TAG
+        working-directory: ./starter/frontend/k8s
 
       - name: Apply Kubernetes resources
-        run: kustomize build | kubectl apply -f -
-        working-directory: ./k8s
-
+        run: |
+          kustomize build | kubectl apply -f -
+        working-directory: ./starter/frontend/k8s
