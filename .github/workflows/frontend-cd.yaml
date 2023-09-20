@@ -94,7 +94,7 @@ jobs:
           echo "Registry: $REGISTRY"
           echo "Repository: $REPOSITORY"
           echo "Image Tag: $IMAGE_TAG"
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 .
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG --build-arg=REACT_APP_MOVIE_API_URL=http://a738773a0e0b942fdb416f30f30f640c-638960999.us-east-1.elb.amazonaws.com .
           docker images
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
