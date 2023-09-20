@@ -1,11 +1,13 @@
 name: Backend Continuous Integration
 
 on:
+  # This allows running on-demand
   workflow_dispatch:
   pull_request:
     branches:
       - main
     paths:
+      # This will only run on changes to the backend code
       - "starter/backend/**"
 
 env:

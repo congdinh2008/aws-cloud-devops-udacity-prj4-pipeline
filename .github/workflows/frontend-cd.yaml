@@ -1,11 +1,13 @@
 name: Frontend Continuous Deployment
 
 on:
-  workflow_dispatch: # This allows running on-demand
+  # This allows running on-demand
+  workflow_dispatch:
   push:
     branches:
       - main
     paths:
+      # This will only run on changes to the frontend code
       - 'starter/frontend/**'
 env:
   NODE_VERSION: 18.x
